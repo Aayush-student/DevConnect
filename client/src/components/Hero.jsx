@@ -1,10 +1,28 @@
-import React from 'react';
-import { Play, Code2, Sparkles, Terminal } from 'lucide-react';
+import React, { useState } from 'react';
+import { Play, Code2, Sparkles, Terminal, LogIn } from 'lucide-react';
 import { codeLines } from '../assets/asset';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Hero = ({setIsModalOpen}) => {
   const navigate = useNavigate();
+  const [joinId, setJoinId] = useState('');
+
+  const handleJoin = () => {
+    if (!joinId) {
+      toast.error("Please paste a Room ID");
+      return;
+    }
+    navigate(`/rooms/${joinId}`);
+    toast.success("Joining Room...");
+  };
+
+  const handleInputEnter = (e) => {
+    if (e.code === 'Enter') {
+      handleJoin();
+    }
+  };
+
   return (
     <section className="flex flex-col items-center justify-center pt-10 pb-20 text-center px-4">
       <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-1.5 rounded-full text-indigo-400 text-xs font-bold uppercase tracking-wider mb-10">
@@ -23,20 +41,37 @@ const Hero = ({setIsModalOpen}) => {
         Collaborative debugging for modern dev teams.
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
-        <button onClick={() => setIsModalOpen(true)} className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-8 py-4 rounded-xl font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-indigo-500/20">
-          <Play size={18} fill="currentColor" /> Start a Room
-        </button>
-        <button onClick={()=> navigate('/explore')} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl 
-        cursor-pointer font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95">
-          <Code2 size={18} /> Browse Bugs
-        </button>
+      <div className="flex flex-col items-center gap-6 mb-20">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button onClick={() => setIsModalOpen(true)} className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-8 py-4 rounded-xl font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-indigo-500/20">
+            <Play size={18} fill="currentColor" /> Start a Room
+          </button>
+          <button onClick={()=> navigate('/explore')} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl cursor-pointer font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95">
+            <Code2 size={18} /> Browse Bugs
+          </button>
+        </div>
+
+        <div className="flex items-center bg-[#161B22] border border-white/10 rounded-xl p-1 w-full max-w-md">
+          <input 
+            type="text"
+            placeholder="PASTE ROOM ID..."
+            value={joinId}
+            onChange={(e) => setJoinId(e.target.value)}
+            onKeyUp={handleInputEnter}
+            className="flex-1 bg-transparent border-none outline-none px-4 text-sm text-white font-mono"
+          />
+          <button 
+            onClick={handleJoin}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-bold text-xs uppercase flex items-center gap-2 transition-all"
+          >
+            <LogIn size={14} /> Join
+          </button>
+        </div>
       </div>
 
       <div className="relative w-full max-w-5xl">
         <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 blur-3xl rounded-3xl"></div>
         <div className="relative bg-[#0d1117] border border-white/10 rounded-2xl shadow-2xl overflow-hidden">
-          
           <div className="bg-[#161b22] px-5 py-3 border-b border-white/5 flex items-center justify-between">
             <div className="flex gap-2">
               <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
@@ -64,7 +99,6 @@ const Hero = ({setIsModalOpen}) => {
               </div>
             ))}
           </div>
-
         </div>
       </div>
     </section>
