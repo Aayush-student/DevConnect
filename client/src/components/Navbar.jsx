@@ -1,64 +1,120 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Terminal, LayoutDashboard, Zap, Github, User } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useContext, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Terminal, LayoutDashboard, Zap, LogOut, Menu, X } from 'lucide-react';
+import { AppContext } from '../context/AppContext';
+
+const NAV_LINKS = [
+  { name: 'Explore', path: '/explore', icon: LayoutDashboard },
+  { name: 'AI Helper', path: '/ai-helper', icon: Zap },
+];
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, setShowLogin, logout } = useContext(AppContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
-  const handleGithubLogin = () => {
-    toast.loading("Connecting to GitHub...");
-    setTimeout(() => {
-      setIsLoggedIn(true);
-      toast.dismiss();
-      toast.success("Successfully synced with GitHub!");
-    }, 1200);
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 w-full z-50 border-b border-white/10 bg-[#0B0E14]/80 backdrop-blur-md px-6 py-3 flex items-center justify-between">
-      
-      <Link to="/" className="flex items-center gap-2 group cursor-pointer">
-        <div className="bg-indigo-600 p-2 rounded-lg group-hover:bg-indigo-500 transition-colors">
-          <Terminal className="text-white w-6 h-6" />
-        </div>
-        <span className="text-xl font-bold tracking-tight text-white">
-          Dev<span className="text-indigo-500">Connect</span>
-        </span>
-      </Link>
-
-      <div className="hidden md:flex items-center gap-8 text-gray-400 font-medium">
-        <Link to="/explore" className="flex items-center gap-2 hover:text-indigo-400 transition-colors">
-          <LayoutDashboard size={18} /> Explore
-        </Link>
-        <Link to="/ai-helper" className="flex items-center gap-2 hover:text-indigo-400 transition-colors">
-          <Zap size={18} /> AI Helper
-        </Link>
-      </div>
-
-      <div className="flex items-center gap-4">
-        {!isLoggedIn ? (
-          <>
-            <button 
-              onClick={handleGithubLogin}
-              className="flex items-center gap-2 text-gray-300 hover:text-white font-medium px-4 py-2 transition-colors cursor-pointer"
-            >
-              <Github size={18} /> Sign In
-            </button>
-            <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-full font-semibold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-indigo-500/20 cursor-pointer">
-              Get Started
-            </button>
-          </>
-        ) : (
-          <div className="flex items-center gap-3 bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
-            <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center">
-              <User size={14} className="text-white" />
+    <nav className="fixed top-0 w-full z-50 bg-[#0B0E14] border-b border-white/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          
+          <Link to="/" className="flex items-center gap-3">
+            <div className="bg-indigo-600 p-2 rounded-lg">
+              <Terminal className="text-white w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
             </div>
-            <span className="text-xs font-bold text-white uppercase tracking-wider">Aayush Kumar</span>
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-lg md:text-xl font-black tracking-tighter text-white uppercase">
+              Dev<span className="text-indigo-500">Connect</span>
+            </span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-8">
+            {NAV_LINKS.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-colors ${
+                  isActive(item.path) ? 'text-indigo-500' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <item.icon size={16} strokeWidth={2.5} />
+                {item.name}
+              </Link>
+            ))}
           </div>
-        )}
+
+          <div className="flex items-center gap-4">
+            {!user ? (
+              <div className="hidden md:flex items-center gap-4">
+                <button 
+                  onClick={() => setShowLogin(true)}
+                  className="text-sm font-bold text-gray-400 hover:text-white uppercase tracking-widest cursor-pointer"
+                >
+                  Login
+                </button>
+                <button 
+                  onClick={() => setShowLogin(true)}
+                  className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold uppercase tracking-widest hover:bg-indigo-500 transition-all cursor-pointer"
+                >
+                  Join
+                </button>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-4">
+                <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg border border-white/10">
+                  <span className="text-sm font-bold text-white uppercase">{user.username}</span>
+                </div>
+                <button 
+                  onClick={logout}
+                  className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                >
+                  <LogOut size={20} />
+                </button>
+              </div>
+            )}
+
+            <button 
+              onClick={() => setIsOpen(!isOpen)} 
+              className="md:hidden text-gray-400 hover:text-white cursor-pointer"
+            >
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
+        </div>
       </div>
+
+      {isOpen && (
+        <div className="md:hidden bg-[#0B0E14] border-b border-white/10 px-4 py-6 space-y-4">
+          {NAV_LINKS.map((item) => (
+            <Link 
+              key={item.path}
+              to={item.path} 
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-4 text-gray-400 font-bold uppercase tracking-widest"
+            >
+              <item.icon size={20} /> {item.name}
+            </Link>
+          ))}
+          <div className="pt-4 border-t border-white/5">
+            {!user ? (
+              <button 
+                onClick={() => { setShowLogin(true); setIsOpen(false); }}
+                className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold uppercase tracking-widest"
+              >
+                Join Now
+              </button>
+            ) : (
+              <button 
+                onClick={() => { logout(); setIsOpen(false); }}
+                className="w-full bg-red-500/10 text-red-500 py-3 rounded-lg font-bold uppercase tracking-widest"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

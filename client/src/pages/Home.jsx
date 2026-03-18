@@ -1,12 +1,13 @@
 import React from 'react'
 import Hero from '../components/Hero'
 
- const Home = ({isModalOpen, setIsModalOpen}) => {
-  return (
-    <div className='animate-page page-container'>
-      <Hero isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
-    </div>
-  )
+
+const Home = ({ openModal }) => {
+    return (
+        <div className="min-h-[80vh] flex flex-col items-center justify-center animate-in fade-in duration-700">
+            <Hero openModal={openModal} />
+        </div>
+    )
 }
 
 export default Home

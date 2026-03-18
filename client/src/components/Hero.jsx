@@ -4,7 +4,7 @@ import { codeLines } from '../assets/asset';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-const Hero = ({setIsModalOpen}) => {
+const Hero = ({ openModal }) => {
   const navigate = useNavigate();
   const [joinId, setJoinId] = useState('');
 
@@ -43,10 +43,10 @@ const Hero = ({setIsModalOpen}) => {
 
       <div className="flex flex-col items-center gap-6 mb-20">
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={() => setIsModalOpen(true)} className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-8 py-4 rounded-xl font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-indigo-500/20">
+          <button onClick={openModal} className="bg-indigo-600 hover:bg-indigo-500 cursor-pointer text-white px-8 py-4 rounded-xl font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-indigo-500/20">
             <Play size={18} fill="currentColor" /> Start a Room
           </button>
-          <button onClick={()=> navigate('/explore')} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl cursor-pointer font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95">
+          <button onClick={() => navigate('/explore')} className="bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-xl cursor-pointer font-black uppercase tracking-tight transition-all flex items-center gap-2 active:scale-95">
             <Code2 size={18} /> Browse Bugs
           </button>
         </div>
