@@ -5,7 +5,7 @@ import {
     logoutUser, 
     getUserData 
 } from "../Controllers/users.controller.js";
-import { verifyjwt } from "../Middlewares/auth.middleware.js";
+import { verifyjwt } from "../middlewares/auth.middleware.js";
 
 const userRouter = Router();
 

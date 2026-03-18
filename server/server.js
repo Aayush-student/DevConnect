@@ -8,9 +8,9 @@ import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import connectDB from "./configs/db/index.js";
 
-import roomRouter from "./Routes/room.routes.js";
-import userRouter from "./Routes/user.routes.js";
-import aiRouter from "./Routes/ai.routes.js"
+import roomRouter from "./routes/room.routes.js";
+import userRouter from "./routes/user.routes.js";
+import aiRouter from "./routes/ai.routes.js"
 
 
 const app = express();

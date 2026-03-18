@@ -1,6 +1,6 @@
-import { asyncHandler } from "../Utils/asyncHandler.js";
-import { ApiError } from "../Utils/apiError.js";
-import { ApiResponse } from "../Utils/ApiResponse.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { Room } from "../models/Room.model.js";
 
 export const createRoom = asyncHandler(async (req, res) => {
