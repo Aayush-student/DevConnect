@@ -7,8 +7,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import connectDB from "./configs/db/index.js";
-
-import roomRouter from "./routes/room.routes.js";
+import roomRouter from "./routes/room.routes.js"
 import userRouter from "./routes/user.routes.js";
 import aiRouter from "./routes/ai.routes.js"
 
