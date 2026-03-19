@@ -29,7 +29,7 @@ const CreateRoomModal = ({ onClose }) => {
 
     try {
      
-      const baseUrl = import.meta.env.VITE_BASE_URL || "http://localhost:4000/api/v1";
+      const baseUrl = import.meta.env.VITE_BASE_URL;
       const fullUrl = `${baseUrl}/rooms/create`;
 
       const generatedRoomId = uuidv4();
