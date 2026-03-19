@@ -4,12 +4,12 @@ import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css"; 
 
-import { AppContext } from "./context/AppContext";
-import Navbar from "./components/Navbar";
-import CreateRoomModal from "./components/CreateRoomModal";
+import { AppContext } from "./context/AppContext.jsx";
+import Navbar from "./components/Navbar.jsx";
+import CreateRoomModal from "./components/CreateRoomModal.jsx";
 import LoginForm from "./components/Loginform.jsx";
-import SignUpForm from "./components/SignUpForm";
-import ProtectedRoute from "./components/ProtectedRoute";
+import SignUpForm from "./components/SignUpForm.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
