@@ -23,7 +23,18 @@ const io = new Server(server, {
     }
 });
 
-app.use(cors({ origin: process.env.CORS_ORIGIN, credentials: true }));
+const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: "20kb" }));
 app.use(express.urlencoded({ extended: true, limit: "20kb" }));
 app.use(express.static("public"));
