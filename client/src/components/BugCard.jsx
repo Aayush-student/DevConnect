@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from "../context/AppContext.jsx";
 import { Trash2, ChevronRight, Code } from "lucide-react";
 import { toast } from "react-toastify";
 

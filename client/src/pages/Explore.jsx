@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Search, Plus, Terminal } from "lucide-react";
-import { AppContext } from "../context/AppContext";
-import BugCard from "../components/bugCard";
+import { AppContext } from "../context/AppContext.jsx";
+import BugCard from "../components/BugCard.jsx";
 
 const Explore = ({ setIsModalOpen }) => {
   const { rooms, loading } = useContext(AppContext);

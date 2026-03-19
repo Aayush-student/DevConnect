@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Terminal, LayoutDashboard, Zap, LogOut, Menu, X } from 'lucide-react';
-import { AppContext } from '../context/AppContext';
+import { AppContext } from '../context/AppContext.jsx';
 
 const NAV_LINKS = [
   { name: 'Explore', path: '/explore', icon: LayoutDashboard },

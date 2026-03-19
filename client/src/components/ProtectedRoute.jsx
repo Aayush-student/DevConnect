@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { AppContext } from '../context/AppContext';
+import { AppContext } from '../context/AppContext.jsx';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 

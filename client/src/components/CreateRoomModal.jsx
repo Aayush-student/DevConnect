@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { X, Terminal, Rocket } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from "../context/AppContext.jsx";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from 'uuid';
 

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { AppContext } from '../context/AppContext'
+import { AppContext } from '../context/AppContext.jsx'
 import { toast } from 'react-toastify'
 import { X } from 'lucide-react'
 
