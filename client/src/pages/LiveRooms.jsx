@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../context/AppContext.jsx";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
@@ -12,6 +12,9 @@ import ChatContainer from "../components/LiveRoom/ChatContainer";
 const LiveRooms = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [editorReady, setEditorReady] = useState(false);
 
   const editorRef = useRef(null);
   const socketRef = useRef(null);
@@ -21,13 +24,24 @@ const LiveRooms = () => {
   const [clients, setClients] = useState([]);
   const [messages, setMessages] = useState([]);
   const [proposals, setProposals] = useState([]);
-  const [isAiLoading, setIsAiLoading] = useState(false);
 
   const roomData = rooms.find((r) => r.roomId === roomId);
   const isAuthor = user?.username === roomData?.author;
 
   useEffect(() => {
-    if (!user?.username) return;
+    if (!editorReady || !editorRef.current) return;
+
+    const incomingCode = location.state?.code || roomData?.code;
+    if (!incomingCode) return;
+
+    const current = editorRef.current.getValue();
+    if (!current || current === "// Loading workspace...") {
+      editorRef.current.setValue(incomingCode);
+    }
+  }, [editorReady, roomData, location.state]);
+
+  useEffect(() => {
+    if (!user?.username || socketRef.current) return;
 
     const socket = io(import.meta.env.VITE_SOCKET_URL, {
       withCredentials: true,
@@ -49,12 +63,10 @@ const LiveRooms = () => {
 
     socket.on("proposal-received", (proposal) => {
       if (!isAuthor) return;
-
       setProposals((prev) => {
         const exists = prev.some((p) => p.id === proposal.id);
         return exists ? prev : [...prev, proposal];
       });
-
       toast.info(`New proposal from ${proposal.username}`);
     });
 
@@ -73,38 +85,28 @@ const LiveRooms = () => {
       setMessages((prev) => [...prev, msg]);
     });
 
-    socket.on("ai-loading-started", () => setIsAiLoading(true));
-
-    socket.on("ai-analysis-received", (aiMsg) => {
-      if (aiMsg) {
-        setMessages((prev) => [...prev, aiMsg]);
-      }
-      setIsAiLoading(false);
-    });
-
-    return () => socket.disconnect();
-  }, [roomId, user?.username]);
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [roomId, user?.username, isAuthor]);
 
   const handlePropose = () => {
     const code = editorRef.current?.getValue();
-
-    socketRef.current.emit("send-proposal", {
+    socketRef.current?.emit("send-proposal", {
       roomId,
       username: user.username,
       code,
     });
-
     toast.success("Proposal sent");
   };
 
   const handleAcceptProposal = (p) => {
     editorRef.current?.setValue(p.code);
-
-    socketRef.current.emit("merge-code", {
+    socketRef.current?.emit("merge-code", {
       roomId,
       code: p.code,
     });
-
     setProposals((prev) => prev.filter((prop) => prop.id !== p.id));
     toast.success("Merged");
   };
@@ -116,20 +118,14 @@ const LiveRooms = () => {
 
   const handleClear = () => {
     editorRef.current?.setValue("");
-
-    socketRef.current.emit("clear-editor", { roomId });
+    socketRef.current?.emit("clear-editor", { roomId });
     toast.warn("Workspace Cleared");
   };
 
   const saveWorkspace = async () => {
     try {
       const code = editorRef.current?.getValue();
-
-      await axios.patch("/rooms/update-code", {
-        roomId,
-        code,
-      });
-
+      await axios.patch("/rooms/update-code", { roomId, code });
       toast.success("Saved to Cloud");
     } catch {
       toast.error("Save failed");
@@ -142,47 +138,8 @@ const LiveRooms = () => {
       user: user.username,
       text,
     };
-
-    socketRef.current.emit("send-message", {
-      roomId,
-      message: msg,
-    });
-
+    socketRef.current?.emit("send-message", { roomId, message: msg });
     setMessages((prev) => [...prev, msg]);
-  };
-
-  const askAI = async () => {
-    const code = editorRef.current?.getValue();
-
-    if (!code || isAiLoading) return;
-
-    setIsAiLoading(true);
-    socketRef.current.emit("start-ai-analysis", { roomId });
-
-    try {
-      const { data } = await axios.post("/ai/analyze", { code });
-
-      if (data.success) {
-        const aiMsg = {
-          id: Date.now(),
-          user: "DevConnect AI",
-          text: data.data.analysis,
-        };
-
-        socketRef.current.emit("submit-ai-analysis", {
-          roomId,
-          aiMsg,
-        });
-
-        setMessages((prev) => [...prev, aiMsg]);
-        toast.success("Analysis complete");
-      }
-    } catch {
-      toast.error("AI failed");
-      socketRef.current.emit("stop-ai-loading", { roomId });
-    } finally {
-      setIsAiLoading(false);
-    }
   };
 
   if (!roomData) {
@@ -195,7 +152,6 @@ const LiveRooms = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-[#0B0E14] text-zinc-300 fixed inset-0 z-10 overflow-hidden font-sans">
-
       <div className="hidden md:block">
         <Sidebar
           clients={clients}
@@ -212,23 +168,18 @@ const LiveRooms = () => {
 
       <main className="flex-1 flex flex-col bg-[#1E1E1E]">
         <Header
-          isAiLoading={isAiLoading}
-          askAI={askAI}
+          askAI={() => {}}
           saveWorkspace={saveWorkspace}
           isAuthor={isAuthor}
           onClear={handleClear}
         />
 
-        <EditorContainer editorRef={editorRef} broadcastCode={() => {}} />
-      </main>
-
-      <div className="md:hidden">
-        <ChatContainer
-          messages={messages}
-          sendMessage={sendMessage}
-          currentUser={user?.username}
+        <EditorContainer
+          editorRef={editorRef}
+          broadcastCode={() => {}}
+          onReady={() => setEditorReady(true)}
         />
-      </div>
+      </main>
 
       <div className="hidden md:block">
         <ChatContainer
@@ -237,7 +188,6 @@ const LiveRooms = () => {
           currentUser={user?.username}
         />
       </div>
-
     </div>
   );
 };

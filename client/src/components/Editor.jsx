@@ -19,9 +19,11 @@ const Editor = () => {
     setCode(updatedCode);
 
     requestAnimationFrame(() => {
-      editorRef.current.selectionStart =
-        editorRef.current.selectionEnd =
-        selectionStart + 2;
+      if (editorRef.current) {
+        editorRef.current.selectionStart =
+          editorRef.current.selectionEnd =
+          selectionStart + 2;
+      }
     });
   };
 

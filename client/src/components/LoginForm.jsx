@@ -13,18 +13,19 @@ const LoginForm = ({ close, toggle }) => {
 
     const handleLogin = async (e) => {
         e.preventDefault()
+
         try {
             const { data } = await axios.post('/user/login', { email, password })
             
             if (data.success) {
                 const { accessToken, refreshToken, user } = data.data
 
-                localStorage.setItem('accessToken', accessToken)
-                localStorage.setItem('refreshToken', refreshToken)
-                
                 setAccessToken(accessToken)
                 setRefreshToken(refreshToken)
                 setUser(user)
+
+                localStorage.setItem('accessToken', accessToken)
+                localStorage.setItem('refreshToken', refreshToken)
                 
                 toast.success("Welcome back")
                 setShowLogin(false)

@@ -1,7 +1,15 @@
 import React from "react";
-import { Loader2, Sparkles, Trash2, Save } from "lucide-react";
+import { Loader2, Sparkles, Trash2, Save, X } from "lucide-react";
 
-const Header = ({ isAiLoading, askAI, saveWorkspace, isAuthor, onClear }) => {
+const Header = ({
+  isAiLoading,
+  askAI,
+  saveWorkspace,
+  isAuthor,
+  onClear,
+  isPreviewing,
+  closePreview
+}) => {
   const handleClear = () => {
     const confirmClear = window.confirm("Wipe editor for everyone?");
     if (confirmClear) onClear();
@@ -18,6 +26,16 @@ const Header = ({ isAiLoading, askAI, saveWorkspace, isAuthor, onClear }) => {
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
+
+        {isPreviewing && (
+          <button
+            onClick={closePreview}
+            title="Close Preview"
+            className="bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 p-2 rounded-lg border border-yellow-500/20 transition-all cursor-pointer"
+          >
+            <X size={14} />
+          </button>
+        )}
 
         {isAuthor && (
           <button
@@ -37,8 +55,8 @@ const Header = ({ isAiLoading, askAI, saveWorkspace, isAuthor, onClear }) => {
           <span className="hidden sm:inline">Save</span>
         </button>
 
-        <button
-          onClick={askAI}
+        {/* <button
+          onClick={() => toast.info("AI coming soon")}
           disabled={isAiLoading}
           className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 md:px-6 py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase flex items-center gap-1 md:gap-2 disabled:opacity-50 transition-all cursor-pointer shadow-lg shadow-indigo-500/10"
         >
@@ -53,7 +71,7 @@ const Header = ({ isAiLoading, askAI, saveWorkspace, isAuthor, onClear }) => {
               <span className="hidden sm:inline">Ask AI</span>
             </>
           )}
-        </button>
+        </button> */}
 
       </div>
     </header>

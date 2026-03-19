@@ -9,19 +9,19 @@ const NAV_LINKS = [
 ];
 
 const Navbar = () => {
-  const { user, setShowLogin, logout } = useContext(AppContext);
+  const { user, setShowLogin, logout, loading } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-[#0B0E14] border-b border-white/10">
+    <nav className="fixed top-0 w-full z-50 bg-[#0B0E14]/80 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           
-          <Link to="/" className="flex items-center gap-3">
-            <div className="bg-indigo-600 p-2 rounded-lg">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="bg-indigo-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
               <Terminal className="text-white w-5 h-5 md:w-6 md:h-6" strokeWidth={2.5} />
             </div>
             <span className="text-lg md:text-xl font-black tracking-tighter text-white uppercase">
@@ -34,8 +34,10 @@ const Navbar = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-colors ${
-                  isActive(item.path) ? 'text-indigo-500' : 'text-gray-400 hover:text-white'
+                className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest transition-all ${
+                  isActive(item.path)
+                    ? 'text-indigo-500'
+                    : 'text-gray-400 hover:text-white'
                 }`}
               >
                 <item.icon size={16} strokeWidth={2.5} />
@@ -45,29 +47,31 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            {!user ? (
+            {!loading && !user && (
               <div className="hidden md:flex items-center gap-4">
                 <button 
                   onClick={() => setShowLogin(true)}
-                  className="text-sm font-bold text-gray-400 hover:text-white uppercase tracking-widest cursor-pointer"
+                  className="text-sm font-bold text-gray-400 hover:text-white uppercase tracking-widest"
                 >
                   Login
                 </button>
                 <button 
                   onClick={() => setShowLogin(true)}
-                  className="bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-bold uppercase tracking-widest hover:bg-indigo-500 transition-all cursor-pointer"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-lg text-sm font-bold uppercase tracking-widest transition-all shadow-lg shadow-indigo-500/20"
                 >
                   Join
                 </button>
               </div>
-            ) : (
+            )}
+
+            {!loading && user && (
               <div className="hidden md:flex items-center gap-4">
-                <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg border border-white/10">
+                <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg border border-white/10 backdrop-blur-md">
                   <span className="text-sm font-bold text-white uppercase">{user.username}</span>
                 </div>
                 <button 
                   onClick={logout}
-                  className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                  className="text-gray-400 hover:text-red-500 transition-all"
                 >
                   <LogOut size={20} />
                 </button>
@@ -76,7 +80,7 @@ const Navbar = () => {
 
             <button 
               onClick={() => setIsOpen(!isOpen)} 
-              className="md:hidden text-gray-400 hover:text-white cursor-pointer"
+              className="md:hidden text-gray-400 hover:text-white"
             >
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>

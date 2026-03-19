@@ -7,34 +7,26 @@ import http from "http";
 import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import connectDB from "./configs/db/index.js";
-import roomRouter from "./routes/room.routes.js"
+import roomRouter from "./routes/room.routes.js";
 import userRouter from "./routes/user.routes.js";
-import aiRouter from "./routes/ai.routes.js"
-
+import aiRouter from "./routes/ai.routes.js";
 
 const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 4000;
 
 const io = new Server(server, {
-    cors: {
-        origin: process.env.CORS_ORIGIN,
-        credentials: true
-    }
+  cors: {
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+  }
 });
 
-const allowedOrigins = process.env.CORS_ORIGIN.split(",");
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"));
-    }
-  },
+  origin: process.env.CORS_ORIGIN,
   credentials: true
 }));
+
 app.use(express.json({ limit: "20kb" }));
 app.use(express.urlencoded({ extended: true, limit: "20kb" }));
 app.use(express.static("public"));
@@ -45,58 +37,71 @@ app.use("/api/v1/rooms", roomRouter);
 app.use("/api/v1/ai", aiRouter);
 
 io.on("connection", (socket) => {
-    socket.on("join-room", ({ roomId, username }) => {
-        socket.join(roomId);
-        socket.data.user = username;
-        socket.data.room = roomId;
-        socket.to(roomId).emit("user-joined", { username, id: socket.id });
-    });
 
-    
-    socket.on("send-proposal", ({ roomId, username, code }) => {
-        socket.to(roomId).emit("proposal-received", { username, code, id: socket.id });
-    });
+  socket.on("join-room", ({ roomId, username }) => {
+    socket.join(roomId);
+    socket.data = { room: roomId, user: username };
 
-   
-    socket.on("merge-code", ({ roomId, code }) => {
-        io.in(roomId).emit("code-update", code);
+    socket.to(roomId).emit("user-joined", {
+      username,
+      id: socket.id
     });
+  });
 
-    socket.on("send-message", ({ roomId, message }) => {
-        socket.to(roomId).emit("receive-message", message);
+  socket.on("send-proposal", ({ roomId, username, code }) => {
+    socket.to(roomId).emit("proposal-received", {
+      username,
+      code,
+      id: socket.id
     });
+  });
 
-    socket.on("start-ai-analysis", ({ roomId }) => {
-        socket.to(roomId).emit("ai-loading-started");
-    });
+  socket.on("merge-code", ({ roomId, code }) => {
+    io.to(roomId).emit("code-update", code);
+  });
 
-    socket.on("submit-ai-analysis", ({ roomId, aiMsg }) => {
-        socket.to(roomId).emit("ai-analysis-received", aiMsg);
-    });
+  socket.on("send-message", ({ roomId, message }) => {
+    socket.to(roomId).emit("receive-message", message);
+  });
 
-    socket.on("stop-ai-loading", ({ roomId }) => {
-        socket.to(roomId).emit("ai-analysis-received", null);
-    });
+  socket.on("start-ai-analysis", ({ roomId }) => {
+    socket.to(roomId).emit("ai-loading-started");
+  });
 
-    socket.on("clear-editor", ({ roomId }) => {
-    io.in(roomId).emit("code-update", "");
-    });
+  socket.on("submit-ai-analysis", ({ roomId, aiMsg }) => {
+    socket.to(roomId).emit("ai-analysis-received", aiMsg);
+  });
 
-    socket.on("disconnect", () => {
-        const { room, user } = socket.data;
-        if (room) socket.to(room).emit("user-left", { id: socket.id, username: user });
-    });
+  socket.on("stop-ai-loading", ({ roomId }) => {
+    socket.to(roomId).emit("ai-analysis-received", null);
+  });
+
+  socket.on("clear-editor", ({ roomId }) => {
+    io.to(roomId).emit("code-update", "");
+  });
+
+  socket.on("disconnect", () => {
+    const { room, user } = socket.data || {};
+
+    if (room) {
+      socket.to(room).emit("user-left", {
+        id: socket.id,
+        username: user
+      });
+    }
+  });
+
 });
 
 connectDB()
-    .then(() => {
-        server.listen(port, () => {
-            console.log(`Server Running on Port ${port}`);
-        });
-    })
-    .catch((err) => {
-        console.error("DATABASE_CONNECTION_FAILED", err);
-        process.exit(1);
+  .then(() => {
+    server.listen(port, () => {
+      console.log(`Server Running on Port ${port}`);
     });
+  })
+  .catch((err) => {
+    console.error("DATABASE_CONNECTION_FAILED", err);
+    process.exit(1);
+  });
 
 export default app;

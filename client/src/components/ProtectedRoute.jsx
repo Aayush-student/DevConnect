@@ -10,11 +10,14 @@ const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         if (!loading && !user && location.pathname !== '/') {
             setShowLogin(true);
-            toast.error("LOGIN REQUIRED", {
-                toastId: "auth-shield"
-            });
+
+            if (!toast.isActive("auth-shield")) {
+                toast.error("LOGIN REQUIRED", {
+                    toastId: "auth-shield"
+                });
+            }
         }
-    }, [user, loading, setShowLogin, location.pathname]);
+    }, [user, loading, location.pathname]);
 
     if (loading) {
         return (

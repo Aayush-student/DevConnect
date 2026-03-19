@@ -1,15 +1,10 @@
 import React from "react";
 import Editor from "@monaco-editor/react";
 
-const EditorContainer = ({ editorRef, broadcastCode }) => {
+const EditorContainer = ({ editorRef, onReady }) => {
   const handleMount = (editor) => {
     editorRef.current = editor;
-  };
-
-  const handleChange = (value) => {
-    if (value !== undefined) {
-      broadcastCode(value);
-    }
+    onReady && onReady();
   };
 
   return (
@@ -18,7 +13,6 @@ const EditorContainer = ({ editorRef, broadcastCode }) => {
         theme="vs-dark"
         defaultLanguage="javascript"
         onMount={handleMount}
-        onChange={handleChange}
         height="100%"
         width="100%"
         options={{

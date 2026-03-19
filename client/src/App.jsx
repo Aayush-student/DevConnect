@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css"; 
@@ -7,7 +7,7 @@ import "./index.css";
 import { AppContext } from "./context/AppContext.jsx";
 import Navbar from "./components/Navbar.jsx";
 import CreateRoomModal from "./components/CreateRoomModal.jsx";
-import LoginForm from "./components/Loginform.jsx";
+import LoginForm from "./components/LoginForm.jsx";
 import SignUpForm from "./components/SignUpForm.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -21,6 +21,9 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
 
+  const location = useLocation();
+  const hideNavbar = location.pathname.startsWith("/rooms");
+
   const closeAuth = () => {
     setShowLogin(false);
     setIsSignUp(false);
@@ -28,7 +31,8 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#0B0E14] text-white font-sans">
-      <Navbar setIsModalOpen={setIsModalOpen} />
+      
+      {!hideNavbar && <Navbar setIsModalOpen={setIsModalOpen} />}
 
       {showLogin && (
         isSignUp ? (
@@ -42,7 +46,7 @@ const App = () => {
         <CreateRoomModal onClose={() => setIsModalOpen(false)} />
       )}
 
-      <main className="max-w-7xl mx-auto pt-24 px-6 pb-12">
+      <main className={hideNavbar ? "" : "max-w-7xl mx-auto pt-24 px-6 pb-12"}>
         <Routes>
           <Route path="/" element={<Home openModal={() => setIsModalOpen(true)} />} />
           <Route path="/explore" element={<Explore openModal={() => setIsModalOpen(true)} />} />
@@ -53,16 +57,16 @@ const App = () => {
       </main>
 
       <ToastContainer 
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={true}
-  closeOnClick
-  pauseOnHover
-  theme="dark"
-  stacked 
-  transition={Bounce}
-/>
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        pauseOnHover
+        theme="dark"
+        stacked 
+        transition={Bounce}
+      />
     </div>
   );
 };

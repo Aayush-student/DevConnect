@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Play, Code2, Sparkles, Terminal, LogIn } from 'lucide-react';
 import { codeLines } from '../assets/asset';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from 'react-toastify';
 
 const Hero = ({ openModal }) => {
   const navigate = useNavigate();
   const [joinId, setJoinId] = useState('');
 
   const handleJoin = () => {
-    if (!joinId) {
+    if (!joinId.trim()) {
       toast.error("Please paste a Room ID");
       return;
     }

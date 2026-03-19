@@ -41,7 +41,10 @@ export default function AppContextProvider({ children }) {
     };
 
     const fetchUser = async () => {
-        if (!accessToken) return;
+        if (!accessToken) {
+            setLoading(false);
+            return;
+        }
 
         try {
             const { data } = await axios.get("/user/data", {
@@ -51,6 +54,8 @@ export default function AppContextProvider({ children }) {
             if (data.success) setUser(data.data);
         } catch {
             forceLogout();
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,42 +75,39 @@ export default function AppContextProvider({ children }) {
     }, [accessToken]);
 
     const fetchRooms = async () => {
-    setLoading(true);
-    try {
-        const { data } = await axios.get("/rooms");
-        if (data.success) setRooms(data.data);
-    } finally {
-        setLoading(false);
-    }
-};
+        try {
+            const { data } = await axios.get("/rooms");
+            if (data.success) setRooms(data.data);
+        } catch {
+            toast.error("Failed to load rooms");
+        }
+    };
 
-useEffect(() => {
-    fetchRooms();
-}, []);
+    useEffect(() => {
+        fetchRooms();
+    }, []);
 
     const value = {
-    navigate,
-    accessToken,
-    setAccessToken,
-    refreshToken,
-    setRefreshToken,
-    user,
-    setUser,
-    axios,
-    fetchUser,
-    fetchRooms,
-    logout,
-    showLogin,
-    setShowLogin,
-    rooms,
-    setRooms,
-    loading
-};
+        navigate,
+        accessToken,
+        setAccessToken,
+        refreshToken,
+        setRefreshToken,
+        user,
+        setUser,
+        axios,
+        fetchUser,
+        fetchRooms,
+        logout,
+        showLogin,
+        setShowLogin,
+        rooms,
+        setRooms,
+        loading
+    };
 
     return (
-        <AppContext.Provider
-            value={value}
-        >
+        <AppContext.Provider value={value}>
             {children}
         </AppContext.Provider>
     );

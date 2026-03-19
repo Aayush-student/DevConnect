@@ -3,7 +3,7 @@ import { Search, Plus, Terminal } from "lucide-react";
 import { AppContext } from "../context/AppContext.jsx";
 import BugCard from "../components/BugCard.jsx";
 
-const Explore = ({ setIsModalOpen }) => {
+const Explore = ({ openModal }) => {
   const { rooms, loading } = useContext(AppContext);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,7 +67,7 @@ const Explore = ({ setIsModalOpen }) => {
           </div>
 
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openModal}
             className="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-indigo-500/20 cursor-pointer"
           >
             <Plus size={22} />
@@ -91,7 +91,7 @@ const Explore = ({ setIsModalOpen }) => {
           </p>
 
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={openModal}
             className="mt-4 text-indigo-500 hover:text-indigo-400 font-black text-[10px] uppercase tracking-widest cursor-pointer transition-colors"
           >
             Launch New Workspace

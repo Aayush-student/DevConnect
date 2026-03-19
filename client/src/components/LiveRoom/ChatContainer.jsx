@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MessageSquare } from "lucide-react";
 
 const ChatContainer = ({ messages, sendMessage, currentUser }) => {
   const [input, setInput] = useState("");
+  const bottomRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,6 +14,10 @@ const ChatContainer = ({ messages, sendMessage, currentUser }) => {
     setInput("");
   };
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <section className="w-full md:w-80 h-[40vh] md:h-auto bg-[#0E1217] border-t md:border-t-0 md:border-l border-white/5 flex flex-col shadow-2xl">
       
@@ -20,14 +25,14 @@ const ChatContainer = ({ messages, sendMessage, currentUser }) => {
         <MessageSquare size={14} /> Room_Chat
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
-        {messages.map((m) => {
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6 flex flex-col justify-end">
+        {messages.map((m, i) => {
           const isMe = m.user === currentUser;
           const isAI = m.user === "DevConnect AI";
 
           return (
             <div
-              key={m.id}
+              key={m.id || i}
               className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}
             >
               <span className="text-[8px] md:text-[9px] font-bold text-gray-600 uppercase mb-1">
@@ -48,6 +53,7 @@ const ChatContainer = ({ messages, sendMessage, currentUser }) => {
             </div>
           );
         })}
+        <div ref={bottomRef} />
       </div>
 
       <form

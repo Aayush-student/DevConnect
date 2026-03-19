@@ -12,7 +12,17 @@ const Sidebar = ({
   onAccept,
   onReject,
   onPropose,
+  onPreview
 }) => {
+  const copyRoomId = async () => {
+    try {
+      await navigator.clipboard.writeText(roomId);
+      toast.success("Copied");
+    } catch {
+      toast.error("Copy failed");
+    }
+  };
+
   return (
     <aside className="w-64 md:w-72 bg-[#0E1217] border-r border-white/5 flex flex-col p-4 md:p-8 overflow-y-auto">
       
@@ -78,6 +88,13 @@ const Sidebar = ({
 
                   <div className="flex gap-2">
                     <button
+                      onClick={() => onPreview(p)}
+                      className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[8px] md:text-[9px] font-black uppercase"
+                    >
+                      Preview
+                    </button>
+
+                    <button
                       onClick={() => onAccept(p)}
                       className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[8px] md:text-[9px] font-black uppercase flex items-center justify-center gap-1"
                     >
@@ -100,10 +117,7 @@ const Sidebar = ({
 
       <div className="mt-auto pt-4 md:pt-6 border-t border-white/5 space-y-2 md:space-y-3">
         <button
-          onClick={() => {
-            navigator.clipboard.writeText(roomId);
-            toast.success("Copied");
-          }}
+          onClick={copyRoomId}
           className="w-full py-3 md:py-4 bg-white text-black rounded-xl text-[9px] md:text-[10px] font-bold uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all"
         >
           Copy Room ID
