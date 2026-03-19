@@ -151,8 +151,8 @@ const LiveRooms = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-[#0B0E14] text-zinc-300 fixed inset-0 z-10 overflow-hidden font-sans">
-      <div className="hidden md:block">
+    <div className="flex flex-col md:flex-row h-screen bg-[#0B0E14] text-zinc-300 overflow-hidden font-sans">
+      <div className="hidden md:block h-full">
         <Sidebar
           clients={clients}
           user={user}
@@ -166,7 +166,7 @@ const LiveRooms = () => {
         />
       </div>
 
-      <main className="flex-1 flex flex-col bg-[#1E1E1E]">
+      <main className="flex-1 flex flex-col bg-[#1E1E1E] overflow-hidden min-h-0">
         <Header
           askAI={() => {}}
           saveWorkspace={saveWorkspace}
@@ -176,12 +176,11 @@ const LiveRooms = () => {
 
         <EditorContainer
           editorRef={editorRef}
-          broadcastCode={() => {}}
           onReady={() => setEditorReady(true)}
         />
       </main>
 
-      <div className="hidden md:block">
+      <div className="hidden md:flex flex-col h-full w-[320px] min-h-0">
         <ChatContainer
           messages={messages}
           sendMessage={sendMessage}

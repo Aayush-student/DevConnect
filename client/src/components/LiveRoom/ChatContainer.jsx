@@ -15,17 +15,17 @@ const ChatContainer = ({ messages, sendMessage, currentUser }) => {
   };
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView();
   }, [messages]);
 
   return (
-    <section className="w-full md:w-80 h-[40vh] md:h-auto bg-[#0E1217] border-t md:border-t-0 md:border-l border-white/5 flex flex-col shadow-2xl">
+    <section className="flex flex-col h-full min-h-0 w-full bg-[#0E1217] border-t md:border-t-0 md:border-l border-white/5 shadow-2xl">
       
       <div className="p-4 md:p-6 border-b border-white/5 text-[9px] md:text-[10px] font-bold text-gray-600 uppercase tracking-widest flex items-center gap-2">
         <MessageSquare size={14} /> Room_Chat
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6 flex flex-col justify-end">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
         {messages.map((m, i) => {
           const isMe = m.user === currentUser;
           const isAI = m.user === "DevConnect AI";
@@ -58,7 +58,7 @@ const ChatContainer = ({ messages, sendMessage, currentUser }) => {
 
       <form
         onSubmit={handleSubmit}
-        className="p-4 md:p-6 bg-black/20 border-t border-white/5"
+        className="p-4 md:p-6 bg-black/20 border-t border-white/5 shrink-0"
       >
         <input
           value={input}

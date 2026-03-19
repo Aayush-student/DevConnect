@@ -56,17 +56,17 @@ const App = () => {
         </Routes>
       </main>
 
-      <ToastContainer 
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        pauseOnHover
-        theme="dark"
-        stacked 
-        transition={Bounce}
-      />
+     <ToastContainer
+  position="top-right"
+  autoClose={2500}
+  hideProgressBar
+  newestOnTop
+  closeOnClick
+  pauseOnHover
+  theme="dark"
+  toastClassName="custom-toast"
+  bodyClassName="custom-toast-body"
+/>
     </div>
   );
 };
