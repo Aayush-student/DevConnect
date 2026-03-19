@@ -5,13 +5,32 @@ import { AppContext } from "../context/AppContext.jsx";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
+const languages = [
+  "javascript",
+  "typescript",
+  "python",
+  "java",
+  "cpp",
+  "c",
+  "csharp",
+  "go",
+  "rust",
+  "php",
+  "html",
+  "css",
+  "json",
+  "markdown",
+  "sql",
+  "bash"
+];
+
 const CreateRoomModal = ({ onClose }) => {
   const navigate = useNavigate();
   const { axios, fetchRooms, user, accessToken } = useContext(AppContext);
 
   const [roomData, setRoomData] = useState({
     roomTitle: "",
-    language: "JavaScript",
+    language: "javascript",
     difficulty: "Easy"
   });
 
@@ -24,7 +43,7 @@ const CreateRoomModal = ({ onClose }) => {
     e.preventDefault();
 
     if (!roomData.roomTitle.trim()) {
-      return toast.error("Please give your room a title!");
+      return toast.error("Give your room a name ⚡");
     }
 
     try {
@@ -44,7 +63,7 @@ const CreateRoomModal = ({ onClose }) => {
       );
 
       if (response.data.success) {
-        toast.success("ROOM IS LIVE!");
+        toast.success("Room launched 🚀");
         fetchRooms();
         onClose();
         navigate(`/rooms/${generatedRoomId}`);
@@ -52,83 +71,97 @@ const CreateRoomModal = ({ onClose }) => {
     } catch (error) {
       const errorMsg =
         error.response?.data?.message ||
-        "Connection lost. Is the server running?";
+        "Server not responding ⚠️";
       toast.error(errorMsg);
     }
   };
 
-  const inputStyle =
-    "w-full bg-[#0B0E14] border border-white/5 rounded-xl py-4 px-4 text-white outline-none focus:border-indigo-500/50 transition-all duration-200";
-
-  const labelStyle =
-    "text-[10px] font-bold uppercase text-gray-500 ml-1 tracking-widest";
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/70 backdrop-blur-md">
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-lg bg-[#161B22] border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-cyan-500" />
+      <div className="relative w-full max-w-lg bg-gradient-to-br from-[#161B22] to-[#0B0E14] border border-white/10 rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.6)] overflow-hidden">
+        
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500" />
 
-        <div className="p-8 md:p-10">
-          <header className="flex justify-between items-center mb-6">
+        <div className="p-8 md:p-10 space-y-6">
+
+          <header className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <Terminal className="text-indigo-400" size={22} />
-              <h2 className="text-xl font-bold uppercase text-white tracking-tight">
+              <h2 className="text-xl font-bold text-white tracking-tight">
                 Create Room
               </h2>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-white/5 rounded-full text-gray-500 hover:text-white"
+              className="p-2 hover:bg-white/5 rounded-full text-gray-400 hover:text-white transition"
             >
-              <X size={24} />
+              <X size={22} />
             </button>
           </header>
 
-          <form onSubmit={handleLaunch} className="space-y-6">
+          <form onSubmit={handleLaunch} className="space-y-5">
+
             <div className="flex flex-col gap-2">
-              <label className={labelStyle}>Project Title</label>
+              <label className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">
+                Project Title
+              </label>
               <input
                 name="roomTitle"
                 value={roomData.roomTitle}
                 onChange={handleChange}
                 placeholder="Debugging Auth Middleware"
-                className={inputStyle}
+                className="w-full bg-[#0B0E14] border border-white/10 rounded-xl py-3 px-4 text-white outline-none focus:border-indigo-500 transition"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-5">
-              <select
-                name="language"
-                value={roomData.language}
-                onChange={handleChange}
-                className={inputStyle}
-              >
-                <option>JavaScript</option>
-                <option>Python</option>
-                <option>Node.js</option>
-              </select>
+            <div className="grid grid-cols-2 gap-4">
 
-              <select
-                name="difficulty"
-                value={roomData.difficulty}
-                onChange={handleChange}
-                className={inputStyle}
-              >
-                <option>Easy</option>
-                <option>Medium</option>
-                <option>Hard</option>
-              </select>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">
+                  Language
+                </label>
+                <select
+                  name="language"
+                  value={roomData.language}
+                  onChange={handleChange}
+                  className="bg-[#0B0E14] border border-white/10 rounded-xl py-3 px-3 text-white outline-none focus:border-indigo-500"
+                >
+                  {languages.map((lang) => (
+                    <option key={lang} value={lang}>
+                      {lang.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-bold uppercase text-gray-500 tracking-widest">
+                  Difficulty
+                </label>
+                <select
+                  name="difficulty"
+                  value={roomData.difficulty}
+                  onChange={handleChange}
+                  className="bg-[#0B0E14] border border-white/10 rounded-xl py-3 px-3 text-white outline-none focus:border-indigo-500"
+                >
+                  <option>Easy</option>
+                  <option>Medium</option>
+                  <option>Hard</option>
+                </select>
+              </div>
+
             </div>
 
             <button
               type="submit"
-              className="w-full bg-white text-black py-4 rounded-xl font-black uppercase flex items-center justify-center gap-3 hover:bg-indigo-600 hover:text-white transition-all active:scale-95 shadow-2xl cursor-pointer mt-4"
+              className="w-full bg-gradient-to-r from-indigo-500 to-cyan-500 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
             >
               Launch Room
-              <Rocket size={20} />
+              <Rocket size={18} />
             </button>
+
           </form>
         </div>
       </div>

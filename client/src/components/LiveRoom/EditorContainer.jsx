@@ -1,17 +1,17 @@
 import React from "react";
 import Editor from "@monaco-editor/react";
 
-const EditorContainer = ({ editorRef, onReady }) => {
+const EditorContainer = ({ editorRef, language, onReady }) => {
   const handleMount = (editor) => {
     editorRef.current = editor;
     onReady && onReady();
   };
 
   return (
-    <div className="flex-1 relative w-full h-full overflow-hidden">
+    <div className="flex-1 relative w-full h-full overflow-hidden min-h-0">
       <Editor
         theme="vs-dark"
-        defaultLanguage="javascript"
+        language={language || "javascript"}
         onMount={handleMount}
         height="100%"
         width="100%"

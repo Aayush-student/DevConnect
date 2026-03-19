@@ -174,10 +174,11 @@ const LiveRooms = () => {
           onClear={handleClear}
         />
 
-        <EditorContainer
-          editorRef={editorRef}
-          onReady={() => setEditorReady(true)}
-        />
+       <EditorContainer
+  editorRef={editorRef}
+  language={roomData?.language}
+  onReady={() => setEditorReady(true)}
+/>
       </main>
 
       <div className="hidden md:flex flex-col h-full w-[320px] min-h-0">
