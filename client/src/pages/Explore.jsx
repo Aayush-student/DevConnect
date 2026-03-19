@@ -4,10 +4,16 @@ import { AppContext } from "../context/AppContext.jsx";
 import BugCard from "../components/BugCard.jsx";
 
 const Explore = ({ openModal }) => {
-  const { rooms, loading } = useContext(AppContext);
+  const { rooms, roomsLoading, fetchRooms } = useContext(AppContext);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [displayRooms, setDisplayRooms] = useState([]);
+
+  useEffect(() => {
+    if (!rooms.length) {
+      fetchRooms();
+    }
+  }, []);
 
   useEffect(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -27,7 +33,7 @@ const Explore = ({ openModal }) => {
     setDisplayRooms(filtered);
   }, [searchTerm, rooms]);
 
-  if (loading) {
+  if (roomsLoading) {
     return (
       <div className="flex justify-center items-center h-96">
         <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>

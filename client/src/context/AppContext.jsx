@@ -18,6 +18,8 @@ export default function AppContextProvider({ children }) {
     const [showLogin, setShowLogin] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const [roomsLoading, setRoomsLoading] = useState(true); 
+
     const saveTokens = (access, refresh) => {
         setAccessToken(access);
         setRefreshToken(refresh);
@@ -76,10 +78,13 @@ export default function AppContextProvider({ children }) {
 
     const fetchRooms = async () => {
         try {
+            setRoomsLoading(true); 
             const { data } = await axios.get("/rooms");
             if (data.success) setRooms(data.data);
         } catch {
             toast.error("Failed to load rooms");
+        } finally {
+            setRoomsLoading(false); 
         }
     };
 
@@ -103,7 +108,8 @@ export default function AppContextProvider({ children }) {
         setShowLogin,
         rooms,
         setRooms,
-        loading
+        loading,
+        roomsLoading 
     };
 
     return (
