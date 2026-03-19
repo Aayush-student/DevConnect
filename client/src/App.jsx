@@ -7,7 +7,7 @@ import "./index.css";
 import { AppContext } from "./context/AppContext";
 import Navbar from "./components/Navbar";
 import CreateRoomModal from "./components/CreateRoomModal";
-import LoginForm from "./components/LoginForm";
+import LoginForm from "./components/Loginform.jsx";
 import SignUpForm from "./components/SignUpForm";
 import ProtectedRoute from "./components/ProtectedRoute";
 
